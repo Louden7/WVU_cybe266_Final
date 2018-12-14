@@ -1,0 +1,140 @@
+File Access:
+  chmod symbolic mode
+    Format: chmod [ugoa...][-+=][Xrwx] file
+      [ugoa]: u=user, g=group, o=all others, a=all users
+      [Xrwx]: X=execute/search only if the file is a directory, r=read, w=write, x=execute/search
+    Example: chmod u+rw foo
+    Example: chmod ugo=rw foo
+    Example: chmod o-rw foo
+  chmod[option]... octal-mode file
+    Format: chmod #### file
+      First # = set UID(4) set GID(2) sticky(1) add to get a number 0-7
+      Second # = owner permission: read(4), write(2), execute(1)
+      Third # = group permission
+      Fourth # = all other permission
+      Note: typically omit the first octal.
+    Example: chmod 644 foo
+    Example: chmod 755 foo
+    Example: chmod 600 foo
+
+  chown [option]...[owner]:[group] file...
+    Example: chown cybe266user foo
+    Example: chown cybe266user:cybe266user foo
+
+  chgrp [option]... group file...
+    Example: chgrp mygroup foo
+
+Man Docs:
+  man [command]
+    Example: man id
+    Example: man 1 passwd
+    Example: man 5 passwd
+
+How To Select a Good Password
+  Minimum of 8 characters. Even longer is better
+  Mixture of upper and lowercase as well as special characters such as *, !, and #.
+  Come up with a phrase to help you remember a long and complex password.
+  For example, “Where oh where has my little 1 gone?” could be translated to “Wowhml1g?”
+  Combine multiple short words together. Try to make them not relate. For example “CatBookPlane”
+  Combine short words together with a separator. For example, “Cat$1Plane”
+  Use a base word along with something unique from the service you are using.
+  For example, when logging into Citigroup banking site “Cat$1Plane” could become “Cat$1PlaneCiti”
+
+Network Control:
+  Firewalls:
+    Looked at controlling access via users and file permissions, now looking at controlling network access
+    Firewalls provide a way to control network access
+    Can block inbound and outbound traffic
+  OSI Network Model:
+    1. Physical Layer - Physical and electrical medium for data transfer.
+    2. Datalink Layer - Establishes, maintains, and decides how data transfer is accomplished over the physical layer.
+    3. Network Layer - Dedicated to routing and switching information between different hosts, networks, and internetworks.
+    4. Transport Layer - Manages and ensures error-free transmission of messages between hosts through logical addressing and port assignment (connection-oriented). Also manages streaming connections, where n number of errors are permitted (connectionless).
+    5. Session Layer - Governs the establishment, termination, and synchronization of sessions within the OS over the network and between hosts.
+    6. Presentation Layer - Translates the data format from sender to receiver and provides mechanisms for code conversion, data compression, and file encryption.
+    7. Application Layer - Where message creation begins. End-user protocols such as FTP, HTTP, and SMTP work on this layer.
+  TCP/IP Model:
+    Client program allocates tcp port on local machine
+    Destination IP address is determined, any routing that needs to happen happens.
+    A connection is attempted to the remote port.
+    If the port is open and working a connection is established.
+    Information can then be sent back and forth in “packets”.
+    1. Network Interface Layer.
+    2. Network Layer.
+    3. Transport Layer.
+      Transport Layer consists of 65,535 tcp ports and udp.
+      TCP = Transmission Control Protocol (Connection Oriented).
+      UDP = User Datagram Protocol (Connectionless).
+      Filtering at this layer is referred to as port filtering.
+      Getting into the Connection Security Knowledge Area.
+    4. Application Layer.
+  TCP vs UDP
+    TCP makes sure packets that are sent are received. TCP connections have more overhead than UDP connections. Used for ssh, telnet, http
+    UDP connections just send packets without checking to see if they are received. Often used for streaming things like video where speed is at the utmost importance.
+  ufw:
+    Stands for uncomplicated firewall.
+    Allows for easy to use syntax to manipulate firewall rules.
+    Disabled by default.
+    Works at transport layer.
+    commands:
+      ufw status (gives the status of the firewall)
+      ufw enable (enables the firewall)
+      ufw disable (disables the firewall, default)
+      ufw reset (this puts the firewall back into disable state)
+      ufw allow from 192.168.56.191 (allows all traffic from a specific IP)
+      ufw allow from IP to any port 80 (limits to a specific port)
+      ufw allow from IP to any port 80 proto tcp (even more specific)
+      ufw deny port 80 (denies traffic to port)
+      ufw deny from IP
+      ufw deny from IP/24 (cidr notation)
+      ufw deny from IP/23 to any port 22 tcp
+      ufw status numbered (gives firewall rules)
+      ufw delete rule # (deletes the specific rule number)
+      ufw insert 1 allow from IP (creates a rule)
+
+Operational Awareness:
+  nmap:
+    Stands for Network Mapperl
+    open port - port is open and receiving connections.
+    closed port - port is closed but host machine is online and receiving connections.
+    filtered port - don't know. packet was sent and no response was received
+    commands:
+      nmap host
+      nmap [cidr notation]
+      namp [IP]
+    flags:
+      -F: limits to 100 ports instead of 1000.
+      -p (port #): scans that single port.
+      -p 22-80 or -p 22,80,111
+      -sn:
+        No port scan option. Limits what is scanned
+        If on a remote subnet, discovery consists of an ICMP echo request, TCP SYN to port 443, TCP ACK to port 80, and an ICMP timestamp request.
+        If on the same subnet ARP requests are used to discover if the host is up
+        nmap -sn ip address of host
+      -Pn: no ping, disables nmap discovery altogether.
+      -sL:
+        list scan.
+        Doesn’t ever scan the target, instead uses DNS to do a reverse name resolution
+        nmap -sL www.google.com
+      -sS:
+        TCP SYN scan
+        Default scan option if privileged
+        Often referred to as half-open scanning
+      -sT:
+        TCP connect scan
+        Default option if not privileged
+        Issues connect system call
+        man 2 connect
+      -sS -reason: reason flag gives more info on how nmap determined port state.
+      -T<0-5>:
+        Controls timings between nmap actions
+        0 = paranoid
+        1 = sneaky
+        2 = polite
+        3 = normal
+        4 = aggressive
+        5 = insane
+      -O: Enables version detection of remote operating system.
+      -sV: Enables version detection of remote services that are running.
+  tshark:
+  
